@@ -171,7 +171,7 @@ function mouseStartHandler(e) {
             myBalls = [];
             x = ballSpawnX;
             addBall(generateRandomY());
-            dx = -5;
+            dx = -2;
             player.yPos = playerSpawnY;
             gameState = 'play';
         }
