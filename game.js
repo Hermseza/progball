@@ -60,6 +60,10 @@ if (localStorage.oldHiscore === undefined) {
 // play - screen where the gmae is actually played
 // end - screen showing game over, if a new hiscore was reached, and to play again
 let gameState = 'start';
+// variables used to lock fps at 60
+let msPrev = window.performance.now();
+const fps = 60;
+const msPerFrame = 1000 / fps;
 
 // event listeners
 
@@ -503,6 +507,15 @@ function drawEnd() {
 
 // main draw loop
 function draw() {
+    // keep track of frames to lock at 60 fps
+    const msNow = window.performance.now();
+    const msPassed = msNow - msPrev;
+
+    if (msPassed < msPerFrame) return;
+
+    const excessTime = msPassed % msPerFrame;
+    msPrev = msNow - excessTime;
+    
     // if the game state is start
     if (gameState === 'start') {
         // draw the start state
