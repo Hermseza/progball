@@ -173,6 +173,8 @@ function mouseStartHandler(e) {
             addBall(generateRandomY());
             dx = -5;
             player.yPos = playerSpawnY;
+            downPressed = false;
+            upPressed = false;
             gameState = 'play';
         }
         // if user clicked/touched the reset button
