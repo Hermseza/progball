@@ -189,29 +189,9 @@ function mouseStartHandler(e) {
 function mouseEndHandler(e) {
     // if the current state is play
     if (gameState === 'play') {
-        // get x and y coordinates of the mouse/touch location
-        let relativeX;
-        let relativeY;
-        const canvasWidth = canvas.offsetWidth;
-        if (e.type === 'touchend') {
-            relativeX = e.changedTouches[0].clientX + canvas.offsetLeft;
-            relativeY = e.changedTouches[0].clientY + canvas.offsetTop;
-        } else {
-            relativeX = e.clientX + canvas.offsetLeft;
-            relativeY = e.clientY + canvas.offsetTop;
-        }
-        // if user is no longer clicking/touching the down button
-        if((relativeX < canvasWidth && relativeX > canvasWidth-50)
-        && (relativeY < canvas.height && relativeY > canvas.height-50)) {
-            // mark it as no longer pressed
-            downPressed = false;
-        }
-        // if the user is no longer clicking/touching the up button
-        if((relativeX < canvasWidth && relativeX > canvasWidth-50)
-        && (relativeY < canvas.height-60 && relativeY > canvas.height-110)) {
-            // mark it as no longer pressed
-            upPressed = false;
-        }
+        // mark buttons as no longer being pressed
+        downPressed = false;
+        upPressed = false;
         // prevent default so users don't have unexpected situations
         e.preventDefault();
     }
