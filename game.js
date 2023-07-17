@@ -507,6 +507,9 @@ function drawEnd() {
 
 // main draw loop
 function draw() {
+    // constantly draw the current state
+    window.requestAnimationFrame(draw);
+    
     // keep track of frames to lock at 60 fps
     const msNow = window.performance.now();
     const msPassed = msNow - msPrev;
@@ -529,8 +532,6 @@ function draw() {
         // draw the end state
         drawEnd();
     }
-    // constantly draw the current state
-    window.requestAnimationFrame(draw);
 }
 
 // start it up
