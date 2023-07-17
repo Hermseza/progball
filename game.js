@@ -492,7 +492,7 @@ function drawPlay() {
         }
         // change velocity, can tweak as needed
         if (level > 1) {
-            dx = -2 * level;
+            dx = -3 * level;
         }
     }
 
