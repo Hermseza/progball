@@ -25,7 +25,7 @@ let myBalls = [];
 // add a starting ball
 addBall(generateRandomY());
 // initial velocity of a ball
-let dx = -2;
+let dx = -5;
 // object representing the player's height and width
 const player = {
     height: 75,
@@ -171,7 +171,7 @@ function mouseStartHandler(e) {
             myBalls = [];
             x = ballSpawnX;
             addBall(generateRandomY());
-            dx = -2;
+            dx = -5;
             player.yPos = playerSpawnY;
             gameState = 'play';
         }
@@ -491,7 +491,9 @@ function drawPlay() {
             addBall(generateRandomY());
         }
         // change velocity, can tweak as needed
-        dx = -2 * level;
+        if (level > 1) {
+            dx = -2 * level;
+        }
     }
 
     // if the user is pressing up
