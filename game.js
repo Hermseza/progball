@@ -511,26 +511,27 @@ function draw() {
     window.requestAnimationFrame(draw);
     
     // keep track of frames to lock at 60 fps
-    const msNow = window.performance.now();
-    const msPassed = msNow - msPrev;
+    let msNow = window.performance.now();
+    let msPassed = msNow - msPrev;
 
-    if (msPassed < msPerFrame) return;
+    if (msPassed > msPerFrame) {
 
-    const excessTime = msPassed % msPerFrame;
-    msPrev = msNow - excessTime;
+        let excessTime = msPassed % msPerFrame;
+        msPrev = msNow - excessTime;
     
-    // if the game state is start
-    if (gameState === 'start') {
-        // draw the start state
-        drawStart();
-    // if the game state is play
-    } else if (gameState === 'play') {
-        // draw the play state
-        drawPlay();
-    // if the play state is end
-    } else if (gameState === 'end') {
-        // draw the end state
-        drawEnd();
+        // if the game state is start
+        if (gameState === 'start') {
+            // draw the start state
+            drawStart();
+        // if the game state is play
+        } else if (gameState === 'play') {
+            // draw the play state
+            drawPlay();
+        // if the play state is end
+        } else if (gameState === 'end') {
+            // draw the end state
+            drawEnd();
+        }
     }
 }
 
