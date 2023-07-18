@@ -25,7 +25,7 @@ let myBalls = [];
 // add a starting ball
 addBall(generateRandomY());
 // initial velocity of a ball
-let dx = -5;
+let dx = -4;
 // object representing the player's height and width
 const player = {
     height: 75,
@@ -175,7 +175,7 @@ function mouseStartHandler(e) {
             myBalls = [];
             x = ballSpawnX;
             addBall(generateRandomY());
-            dx = -5;
+            dx = -4;
             player.yPos = playerSpawnY;
             downPressed = false;
             upPressed = false;
@@ -225,7 +225,7 @@ function addBall(yToAdd) {
         sortedBalls.push(yToAdd);
         // sort the array so we can go in order of y positoin
         sortedBalls.sort(function(a, b){return a - b});
-        // keey track of the previous ball in the array
+        // keep track of the previous ball in the array
         let previousBall = sortedBalls[0];
         // iterate through all balls, starting with the second
         for (let i = 1; i < sortedBalls.length; i++) {
@@ -464,7 +464,7 @@ function drawPlay() {
         score += myBalls.length;
         levelScore++;
         // can tweak this numbmer to whatever for increment
-        if ( (level === 1 && levelScore === 5) || levelScore === 10 ) {
+        if ( levelScore === (level * 5) {
             level++;
             levelScore = 0;
         }
@@ -477,8 +477,10 @@ function drawPlay() {
             addBall(generateRandomY());
         }
         // change velocity, can tweak as needed
-        if (level > 1) {
-            dx = -3 * level;
+        if (level === 2) {
+            dx = -5;
+        } else if (level > 2) {
+            dx = -2 * level;
         }
     }
 
