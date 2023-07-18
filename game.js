@@ -464,7 +464,7 @@ function drawPlay() {
         score += myBalls.length;
         levelScore++;
         // can tweak this numbmer to whatever for increment
-        if ( levelScore === (level * 5) {
+        if ( levelScore === (level * 5) ) {
             level++;
             levelScore = 0;
         }
