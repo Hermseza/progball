@@ -9,15 +9,16 @@ canvas.height = window.innerHeight;
 // context used to draw on the canvas
 const ctx = canvas.getContext("2d");
 // radius of the ball object
-const ballRadius = 10;
-// used to keep track of the x position of a ball
-let x = canvas.width - ballRadius;
+const initialBallRadius = 10;
+let ballRadius = initialBallRadius;
 // starting x position of a ball
-const ballSpawnX = canvas.width-ballRadius;
+const ballSpawnX = canvas.width - ballRadius;
+// used to keep track of the x position of a ball
+let x = ballSpawnX;
 // minimum possible y position of a ball
-const yBallMin = 50 + ballRadius;
+let yBallMin = 50 + ballRadius;
 // maximum possible y position of a ball
-const yBallMax = canvas.height-ballRadius;
+let yBallMax = canvas.height - ballRadius;
 // minimum position of the player
 const yMin = 50;
 // array used to store all current balls
@@ -28,8 +29,9 @@ addBall(generateRandomY());
 const initialVelocity = -4;
 let dx = initialVelocity;
 // object representing the player's height and width
+const initialPlayerHeight = 75;
 const player = {
-    height: 75,
+    height: initialPlayerHeight,
     width: 10
 };
 // player's y spawn position, in the middle of the y axis
@@ -60,11 +62,17 @@ if (localStorage.oldHiscore === undefined) {
 // start - initial starting screen with instructions on how to play
 // play - screen where the gmae is actually played
 // end - screen showing game over, if a new hiscore was reached, and to play again
+// modes - screen showing custom modes to choose from
 let gameState = 'start';
 // variables used to lock fps at 60
 let msPrev = window.performance.now();
 const fps = 60;
 const msPerFrame = 1000 / fps;
+// used to keep track of starting position that will be used for touchmove references
+let touchStartY;
+// used to keep track of modes
+let shrinkMode = false;
+let ballMode = 'normal';
 
 // event listeners
 
@@ -76,6 +84,8 @@ document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousedown", mouseStartHandler, false);
 // listen for a touchstart
 document.addEventListener("touchstart", mouseStartHandler, false);
+// listen for a touchmove
+document.addEventListener("touchmove", touchMoveHandler, false);
 // listen for a mouseup
 document.addEventListener("mouseup", mouseEndHandler, false);
 // listen for a touchend
@@ -141,11 +151,18 @@ function mouseStartHandler(e) {
         relativeY = e.clientY + canvas.offsetTop;
     }
 
+    // if the game state is start or end and the modes buttons is pressed
+    if ( (gameState === 'start' || gameState === 'end')
+    && (relativeX < canvas.width && relativeX > canvas.width - 100)
+    && (relativeY < canvas.height && relativeY > canvas.height - 100) ) {
+        // switch to the modes state
+        gameState = 'modes';
+    } 
     // if the current state is start
-    if (gameState === 'start') {
+    else if (gameState === 'start') {
         // if user clicked/touched the play button
         if( (relativeX < (canvas.width/2)+30 && relativeX > (canvas.width/2)-30)
-        && (relativeY < 510 && relativeY > 450) ) {
+        && (relativeY < 610 && relativeY > 550) ) {
             // start a new game
             gameState = 'play';
         }
@@ -156,12 +173,18 @@ function mouseStartHandler(e) {
         && (relativeY < canvas.height && relativeY > canvas.height-50)) {
             // mark it as pressed
             downPressed = true;
-        }
         // if the user clicked/touched the up button
-        if((relativeX < canvasWidth && relativeX > canvasWidth-50)
+        } else if((relativeX < canvasWidth && relativeX > canvasWidth-50)
         && (relativeY < canvas.height-60 && relativeY > canvas.height-110)) {
             // mark it as pressed
             upPressed = true;
+        // user clicked/touched somewhere else on the screen
+        } else {
+            // if it is a touchstart event
+            if (e.type === 'touchstart') {
+                // set the tracking value
+                touchStartY = e.changedTouches[0].clientY + canvas.offsetTop;
+            }
         }
         // prevent default so users don't have unexpected situations
         e.preventDefault();
@@ -174,9 +197,11 @@ function mouseStartHandler(e) {
             level = 1;
             levelScore= 0;
             myBalls = [];
+            ballRadius = initialBallRadius;
             x = ballSpawnX;
             addBall(generateRandomY());
             dx = initialVelocity;
+            player.height = initialPlayerHeight;
             player.yPos = playerSpawnY;
             downPressed = false;
             upPressed = false;
@@ -188,6 +213,82 @@ function mouseStartHandler(e) {
             localStorage.hiscore = '0';
         }
         e.preventDefault();
+    // if we are on the modes screen
+    } else if (gameState === 'modes') {
+        // if the shrinkMode off button is pressed
+        if( (relativeX < 50 && relativeX > 0)
+        && (relativeY < 270 && relativeY > 220) ) {
+            // change the shrinkMode value
+            shrinkMode = false;
+        }
+        // if the shrinkMode on button is pressed
+        if( (relativeX < 120 && relativeX > 70)
+        && (relativeY < 270 && relativeY > 220) ) {
+            // change the shrinkMode value
+            shrinkMode = true;
+        }
+        // if the shrunken button is pressed
+        if( (relativeX < 100 && relativeX > 0)
+        && (relativeY < 490 && relativeY > 390) ) {
+            // change the ballMode value
+            ballMode = 'shrunken';
+        }
+        // if the normal button is pressed
+        if( (relativeX < 220 && relativeX > 120)
+        && (relativeY < 490 && relativeY > 390) ) {
+            // change the ballMode value
+            ballMode = 'normal';
+        }
+        // if the enlarged button is pressed
+        if( (relativeX < 340 && relativeX > 240)
+        && (relativeY < 490 && relativeY > 390) ) {
+            // change the ballMode value
+            ballMode = 'enlarged';
+        }
+        // if the play button is pressed
+        if( (relativeX < (canvasWidth/2)+30 && relativeX > (canvasWidth/2)-30)
+        && (relativeY < 610 && relativeY > 550) ) {
+            // start a new game
+            score = 0;
+            level = 1;
+            levelScore= 0;
+            myBalls = [];
+            ballRadius = initialBallRadius;
+            x = ballSpawnX;
+            addBall(generateRandomY());
+            dx = initialVelocity;
+            player.height = initialPlayerHeight;
+            player.yPos = playerSpawnY;
+            downPressed = false;
+            upPressed = false;
+            gameState = 'play';
+        }
+        // prevent both touch events and mouse click from firing at the same time
+        e.preventDefault();
+    }
+}
+// handle touchmove event
+function touchMoveHandler(e) {
+    // if the current state is play
+    if (gameState === 'play') {
+        // get y coordinate of the touch location
+        const relativeY = e.changedTouches[0].clientY + canvas.offsetTop;
+        // if user swiped down
+        if (relativeY > touchStartY) {
+            // if they were previously moving up, stop
+            upPressed = false;
+            // and move down
+            downPressed = true;
+        }
+        // if user swiped up
+        if(relativeY < touchStartY) {
+            // if they were previously moving down, stop
+            downPressed = false;
+            // and move up
+            upPressed = true;
+        }
+        // prevent default so users don't have unexpected situations
+        e.preventDefault();
     }
 }
 // handle mouseend event
@@ -197,6 +298,8 @@ function mouseEndHandler(e) {
         // mark buttons as no longer being pressed
         downPressed = false;
         upPressed = false;
+        // reset touchStartY position
+        touchStartY = null;
         // prevent default so users don't have unexpected situations
         e.preventDefault();
     }
@@ -339,6 +442,29 @@ function drawUpDownButtons() {
     ctx.fillText("Up", canvas.width-25, canvas.height-85);
     ctx.closePath();
 }
+// draws the modes button
+function drawModesButton() {
+    // Modes button description
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "start";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("Press the Modes button for fun modes", 0, canvas.height-50);
+    // Modes button
+    ctx.beginPath();
+    ctx.rect(canvas.width-100, canvas.height-100, 100, 100);
+    ctx.fillStyle = "LightSlateGray";
+    ctx.fill();
+    ctx.closePath();
+    // Modes button text
+    ctx.beginPath();
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Modes", canvas.width-50, canvas.height-50);
+    ctx.closePath();
+}
 // draws the background
 function drawBackground() {
     ctx.beginPath();
@@ -367,17 +493,104 @@ function drawIntroduction() {
     ctx.fillText("Controls:", 0, 280);
     ctx.fillText("Press the up/down arrow keys to move up/down.", 0, 310);
     ctx.fillText("Or press the on-screen up/down buttons.", 0, 340);
-    ctx.fillText("Press the \"Play\" button to start dodging.", 0, 400);
+    ctx.fillText("Mobile users can also press and hold", 0, 370);
+    ctx.fillText("anywhere on the screen (starting point)", 0, 400);
+    ctx.fillText("and move up/down from the starting point.", 0, 430);
+    ctx.fillText("Release to stop moving.", 0, 460);
+    ctx.fillText("Press the \"Play\" button to start dodging.", 0, 510);
     // play button
     ctx.beginPath()
-    ctx.rect((canvas.width/2)-30, 450, 60, 60);
+    ctx.rect((canvas.width/2)-30, 550, 60, 60);
     ctx.fillStyle = "LightSlateGray";
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Play", canvas.width/2, 480);
+    ctx.fillText("Play", canvas.width/2, 580);
+}
+// draws the content for the modes screen
+function drawModesContent() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    // header text
+    ctx.fillText("Modes", canvas.width/2, 35);
+    // description
+    ctx.textAlign = "start";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("Care to spice things up? Try a new mode!", 0, 80);
+    ctx.fillText("Player progressively get smaller with", 0, 160);
+    const shrinkModeText = shrinkMode ? "On" : "Off";
+    ctx.fillText(`Shrink Mode: ${shrinkModeText}`, 0, 200);
+    // shrink mode off button
+    ctx.beginPath()
+    ctx.rect(0, 220, 50, 50);
+    ctx.fillStyle = shrinkMode ? "Crimson" : "SeaGreen";
+    ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Off", 25, 245);
+    // shrink mode on button
+    ctx.beginPath()
+    ctx.rect(70, 220, 50, 50);
+    ctx.fillStyle = shrinkMode ? "SeaGreen" : "Crimson";
+    ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("On", 95, 245);
+    // render on/off button with text
+    ctx.textAlign = "start";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("Balls get progressively bigger or smaller with", 0, 330);
+    const ballModeText = ballMode.charAt(0).toUpperCase() + ballMode.slice(1);
+    ctx.fillText(`Ball Mode: ${ballModeText}`, 0, 370);
+    // ball mode buttons
+    // shrunken
+    ctx.beginPath()
+    ctx.rect(0, 390, 100, 100);
+    ctx.fillStyle = ballMode === 'shrunken' ? "SeaGreen" : "Crimson";
+    ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Shrunken", 50, 440);
+    // normal
+    ctx.beginPath()
+    ctx.rect(120, 390, 100, 100);
+    ctx.fillStyle = ballMode === 'normal' ? "SeaGreen" : "Crimson";
+    ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Normal", 170, 440);
+    // enlarged
+    ctx.beginPath()
+    ctx.rect(240, 390, 100, 100);
+    ctx.fillStyle = ballMode === 'enlarged' ? "SeaGreen" : "Crimson";
+    ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Enlarged", 290, 440);
+    // play button
+    ctx.beginPath()
+    ctx.rect((canvas.width/2)-30, 550, 60, 60);
+    ctx.fillStyle = "LightSlateGray";
+    ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Play", canvas.width/2, 580);
 }
 // draws the game over screen
 function drawGameOver() {
@@ -426,6 +639,8 @@ function drawStart() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // draw background
     drawBackground();
+    // draw modes button
+    drawModesButton();
     // draw introduction
     drawIntroduction();
 }
@@ -455,7 +670,9 @@ function drawPlay() {
         // loop through all balls in play
         for (let i = 0; i < myBalls.length; i++) {
             // ball hit the player, game over
-            if (myBalls[i] > player.yPos && myBalls[i] < player.yPos + player.height) {
+            if ( (myBalls[i] >= player.yPos && myBalls[i] <= player.yPos + player.height)
+            || (myBalls[i] + ballRadius >= player.yPos && myBalls[i] + ballRadius <= player.yPos + player.height)
+            || (myBalls[i] - ballRadius >= player.yPos && myBalls[i] - ballRadius <= player.yPos + player.height) ) {
                 // change to the end game state
                 gameState = 'end';
                 return;
@@ -468,10 +685,45 @@ function drawPlay() {
         if ( levelScore === (level * 5) ) {
             level++;
             levelScore = 0;
+            // adjust for modes
+            // check for shrinkMode
+            if (shrinkMode) {
+                // the potential new player height
+                const newHeight = player.height - 5;
+                // make sure the player still has height
+                if (newHeight > 1) {
+                    // adjust player height
+                    player.height = newHeight;
+                }
+            }
+            // check for ballMode
+            // enlarged mode increases ballRadius
+            if (ballMode === 'enlarged') {
+                // the potential new ball radius
+                const newBallRadius = ballRadius + 1;
+                // make sure player still has room to dodge
+                if (canvas.height - 50 - newBallRadius > player.height) {
+                    // adjust ballRadius and related variables
+                    ballRadius = newBallRadius;
+                    yBallMin = 50 + ballRadius;
+                    yBallMax = canvas.height - ballRadius;
+                }
+            // shrunken mode decreases ball radius
+            } else if (ballMode === 'shrunken') {
+                // the potential new ball radius
+                const newBallRadius = ballRadius - 1;
+                // make sure the ball still has a radius
+                if (newBallRadius > 1) {
+                    // adjust ballRadius and related variables
+                    ballRadius = newBallRadius;
+                    yBallMin = 50 + ballRadius;
+                    yBallMax = canvas.height - ballRadius;
+                }
+            }
         }
-        // reset bals array
+        // reset balls array
         myBalls = [];
-        // reset x balls x position
+        // reset ball's x position
         x = ballSpawnX;
         // add necessary balls, can tweak levels accordingly
         for (let i = 0; i < level; i++) {
@@ -485,11 +737,19 @@ function drawPlay() {
     if(upPressed && player.yPos > yMin) {
         // move the player up
         player.yPos -= 7;
+        // ensure player doesn't go above the top border
+        if (player.yPos < yMin) {
+            player.yPos = yMin;
+        }
     }
     // if the user is pressing down
-    else if(downPressed && player.yPos < canvas.height-player.height) {
+    else if(downPressed && player.yPos < canvas.height - player.height) {
         // move the player down
         player.yPos += 7;
+        // ensure player doesn't go below the screen
+        if (player.yPos > canvas.height - player.height) {
+            player.yPos = canvas.height - player.height;
+        }
     }
     // move the ball
     x += dx;
@@ -500,8 +760,19 @@ function drawEnd() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // draw background
     drawBackground();
-    // draw introduction
+    // draw modes button
+    drawModesButton();
+    // draw game over
     drawGameOver();
+}
+// draw the modes state
+function drawModes() {
+    // clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // draw background
+    drawBackground();
+    // draw modes content
+    drawModesContent();
 }
 
 // main draw loop
@@ -530,6 +801,10 @@ function draw() {
         } else if (gameState === 'end') {
             // draw the end state
             drawEnd();
+        // if the play state is modes
+        } else if (gameState === 'modes') {
+            // draw the modes state
+            drawModes();
         }
     }
 }
