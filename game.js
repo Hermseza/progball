@@ -54,8 +54,17 @@ const localStorage = window.localStorage;
 if (localStorage.hiscore === undefined) {
     localStorage.hiscore = '0';
 }
+// set old hiscore if not defined
 if (localStorage.oldHiscore === undefined) {
     localStorage.oldHiscore = '0';
+}
+// set shrinkMode if not defined
+if (localStorage.shrinkMode === undefined) {
+    localStorage.shrinkMode = 'false';
+}
+// set ballMode if not defined
+if (localStorage.ballMode === undefined) {
+    localStorage.ballMode = 'normal';
 }
 // keeps track of the game state to determine what to render to the canvas
 // potential states:
@@ -70,9 +79,6 @@ const fps = 60;
 const msPerFrame = 1000 / fps;
 // used to keep track of starting position that will be used for touchmove references
 let touchStartY;
-// used to keep track of modes
-let shrinkMode = false;
-let ballMode = 'normal';
 
 // event listeners
 
@@ -219,31 +225,31 @@ function mouseStartHandler(e) {
         if( (relativeX < 50 && relativeX > 0)
         && (relativeY < 270 && relativeY > 220) ) {
             // change the shrinkMode value
-            shrinkMode = false;
+            localStorage.shrinkMode = 'false';
         }
         // if the shrinkMode on button is pressed
         if( (relativeX < 120 && relativeX > 70)
         && (relativeY < 270 && relativeY > 220) ) {
             // change the shrinkMode value
-            shrinkMode = true;
+            localStorage.shrinkMode = 'true';
         }
         // if the shrunken button is pressed
         if( (relativeX < 100 && relativeX > 0)
         && (relativeY < 490 && relativeY > 390) ) {
             // change the ballMode value
-            ballMode = 'shrunken';
+            localStorage.ballMode = 'shrunken';
         }
         // if the normal button is pressed
         if( (relativeX < 220 && relativeX > 120)
         && (relativeY < 490 && relativeY > 390) ) {
             // change the ballMode value
-            ballMode = 'normal';
+            localStorage.ballMode = 'normal';
         }
         // if the enlarged button is pressed
         if( (relativeX < 340 && relativeX > 240)
         && (relativeY < 490 && relativeY > 390) ) {
             // change the ballMode value
-            ballMode = 'enlarged';
+            localStorage.ballMode = 'enlarged';
         }
         // if the play button is pressed
         if( (relativeX < (canvasWidth/2)+30 && relativeX > (canvasWidth/2)-30)
@@ -522,12 +528,12 @@ function drawModesContent() {
     ctx.textBaseline = "alphabetic";
     ctx.fillText("Care to spice things up? Try a new mode!", 0, 80);
     ctx.fillText("Player progressively get smaller with", 0, 160);
-    const shrinkModeText = shrinkMode ? "On" : "Off";
+    const shrinkModeText = localStorage.shrinkMode === 'true' ? "On" : "Off";
     ctx.fillText(`Shrink Mode: ${shrinkModeText}`, 0, 200);
     // shrink mode off button
     ctx.beginPath()
     ctx.rect(0, 220, 50, 50);
-    ctx.fillStyle = shrinkMode ? "Crimson" : "SeaGreen";
+    ctx.fillStyle = localStorage.shrinkMode === 'true' ? "Crimson" : "SeaGreen";
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "white";
@@ -537,7 +543,7 @@ function drawModesContent() {
     // shrink mode on button
     ctx.beginPath()
     ctx.rect(70, 220, 50, 50);
-    ctx.fillStyle = shrinkMode ? "SeaGreen" : "Crimson";
+    ctx.fillStyle = localStorage.shrinkMode === 'true' ? "SeaGreen" : "Crimson";
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "white";
@@ -548,13 +554,13 @@ function drawModesContent() {
     ctx.textAlign = "start";
     ctx.textBaseline = "alphabetic";
     ctx.fillText("Balls get progressively bigger or smaller with", 0, 330);
-    const ballModeText = ballMode.charAt(0).toUpperCase() + ballMode.slice(1);
+    const ballModeText = localStorage.ballMode.charAt(0).toUpperCase() + localStorage.ballMode.slice(1);
     ctx.fillText(`Ball Mode: ${ballModeText}`, 0, 370);
     // ball mode buttons
     // shrunken
     ctx.beginPath()
     ctx.rect(0, 390, 100, 100);
-    ctx.fillStyle = ballMode === 'shrunken' ? "SeaGreen" : "Crimson";
+    ctx.fillStyle = localStorage.ballMode === 'shrunken' ? "SeaGreen" : "Crimson";
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "white";
@@ -564,7 +570,7 @@ function drawModesContent() {
     // normal
     ctx.beginPath()
     ctx.rect(120, 390, 100, 100);
-    ctx.fillStyle = ballMode === 'normal' ? "SeaGreen" : "Crimson";
+    ctx.fillStyle = localStorage.ballMode === 'normal' ? "SeaGreen" : "Crimson";
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "white";
@@ -574,7 +580,7 @@ function drawModesContent() {
     // enlarged
     ctx.beginPath()
     ctx.rect(240, 390, 100, 100);
-    ctx.fillStyle = ballMode === 'enlarged' ? "SeaGreen" : "Crimson";
+    ctx.fillStyle = localStorage.ballMode === 'enlarged' ? "SeaGreen" : "Crimson";
     ctx.fill();
     ctx.closePath();
     ctx.fillStyle = "white";
@@ -687,7 +693,7 @@ function drawPlay() {
             levelScore = 0;
             // adjust for modes
             // check for shrinkMode
-            if (shrinkMode) {
+            if (localStorage.shrinkMode === 'true') {
                 // the potential new player height
                 const newHeight = player.height - 5;
                 // make sure the player still has height
@@ -698,7 +704,7 @@ function drawPlay() {
             }
             // check for ballMode
             // enlarged mode increases ballRadius
-            if (ballMode === 'enlarged') {
+            if (localStorage.ballMode === 'enlarged') {
                 // the potential new ball radius
                 const newBallRadius = ballRadius + 1;
                 // make sure player still has room to dodge
@@ -709,7 +715,7 @@ function drawPlay() {
                     yBallMax = canvas.height - ballRadius;
                 }
             // shrunken mode decreases ball radius
-            } else if (ballMode === 'shrunken') {
+            } else if (localStorage.ballMode === 'shrunken') {
                 // the potential new ball radius
                 const newBallRadius = ballRadius - 1;
                 // make sure the ball still has a radius
