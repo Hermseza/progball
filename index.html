@@ -9,9 +9,101 @@
     <title>Hermseza's Progball</title>
 </head>
 <body>
-    <canvas id="canvas">
+    <canvas tabindex="1" id="canvas" class="hidden">
         Upgrade your browser, doofus.
     </canvas>
+    <div id="login" class="hidden"></div>
+    <div id="start" class="active">
+        <h1 class="banner">Welcome to Progball!</h1>
+        <h2>Description:</h2>
+        <p>
+            Progball is a Souls-like bullet-hell dodging simulator.
+            <br/>
+            The more balls you dodge, the more balls spawn and become faster.
+            <br/>
+            Dodge more balls, score goes up.
+        </p>
+        <h2>Controls:</h2>
+        <p>
+            Press/click the Up/Down buttons on screen or Up/Down arrowkeys to move.
+            <br/>
+            Mobile users can also press and hold anywhere on the screen (starting point) and move up/down from the starting point. Release to stop moving.
+            <br/>
+            Don't get hit by the balls.
+            <br/>
+            Press the Play button to start dodging.
+            <br/>
+            Press the Modes button to spice things up.
+            <br/>
+            And most importantly: have fun!
+        </p>
+        <div class="buttons">
+            <button class="playButton">Play</button>
+            <button class="modesButton">Modes</button>
+        </div>
+    </div>
+    <div id="modes" class="hidden">
+        <h1 class="banner">Progball Modes</h1>
+        <p>
+            Want to spice things up? Try a new mode!
+            <br/>
+            With Shrink Mode enabled, your character will progressively get smaller.
+            <br/>
+            <br/>
+            Shrink Mode: <span id="shrinkModeText">Off</span>
+            <span class="shrinkButtons">
+                <button id="shrinkOff" class="buttonOn">Off</button>
+                <button id="shrinkOn" class="buttonOff">On</button>
+            </span>
+        </p>
+        <p>
+            With the Enlarged ball mode, the balls will progressively get bigger.
+            <br/>
+            With the Normal ball mode, the balls will stay the same size.
+            <br/>
+            With the Shrunken ball mode, the balls will progressively get smaller.
+            <br/>
+            <br/>
+            Ball Mode: <span id="ballModeText">Normal</span>
+            <div class="ballButtons">
+                <button id="ballShrunken" class="buttonOff">Shrunken</button>
+                <button id="ballNormal" class="buttonOn">Normal</button>
+                <button id="ballEnlarged" class="buttonOff">Enlarged</button>
+            </div>
+        </p>
+        <div class="buttons">
+            <button class="playButton">Play</button>
+        </div>
+    </div>
+    <div id="end" class="hidden">
+        <h1 class="banner">Hermseza's Progball</h1>
+        <p class="endText">
+            Oh dear, you are dead.
+            <br/>
+            Just kidding, but your dodging skills have failed you.
+            <br/>
+            <span id="scoreFlavorText">Not quite a new Hiscore, bummer.</span>
+            <br/>
+            <br/>
+            <span id="scoreText">Score: 0</span>
+            <br/>
+            <span id="hiscoreText">Hiscore: localStorage.hiscore</span>
+            <br/>
+            <br/>
+            Press Play to dodge some more, or press Modes to change your game up.
+        </p>
+        <div class="endButtons">
+            <button class="playButton">Play</button>
+            <button class="modesButton">Modes</button>
+        </div>
+        <p class="endText">
+            If you're feeling particularly daring, reset your Hiscore with the Reset button.
+            <br/>
+        </p>
+        <div class="endButtons">
+            <button id="reset">Reset</button>
+        </div>
+    </div>
     <script type="text/javascript" src="bundle.js"></script>
 </body>
 </html>
