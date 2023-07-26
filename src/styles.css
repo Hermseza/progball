@@ -1,4 +1,4 @@
-body {
+html, body {
     -ms-touch-actiion: none;
     touch-action: none;
     background: SteelBlue;
@@ -6,6 +6,7 @@ body {
     color: white;
     line-height: 1.5;
     overflow: hidden;
+    font-size: 2vh;
 }
 canvas {
     background: LightSteelBlue;
