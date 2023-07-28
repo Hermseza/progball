@@ -12,8 +12,70 @@
     <canvas tabindex="1" id="canvas" class="hidden">
         Upgrade your browser, doofus.
     </canvas>
-    <div id="login" class="hidden"></div>
-    <div id="start" class="active">
+    <div id="login" class="active">
+        <h1 class="banner">Welcome to Progball!</h1>
+        <h2>Create an account using email or log in and play!</h2>
+        <div id="loginButtons" class="loginButtons">
+            <button id="signupButton">Signup</button>
+            <button id="loginButton">Login</button>
+        </div>
+        <div id="createAccount" class="createAccount hidden">
+            <h3>Create a new account</h3>
+            <br/>
+            <label for="newEmail"><b>Email:</b></label>
+            <input id="newEmail" type="text" placeholder="Enter Email" name="newEmail" required>
+            <br/>
+            <br/>
+            <label for="newPassword"><b>Password:</b></label>
+            <input id="newPassword" type="password" placeholder="Enter Password" name="newPassword" required>
+            <br/>
+            <div class="buttons">
+                <button id="createNewAccountButton" class="loginButton">Create New Account</button>
+                <button class="backToLoginButton">Back to Login</button>
+            </div>
+            <br/>
+            <span id="createError" class="hidden">Creation Error!</span>
+        </div>
+        <div id="existingAccount" class="existingAccount hidden">
+            <h3>Login to existing account</h3>
+            <br/>
+            <label for="existingEmail"><b>Email:</b></label>
+            <input id="existingEmail" type="text" placeholder="Enter Email" name="existingEmail" required>
+            <br/>
+            <br/>
+            <label for="existingPassword"><b>Password:</b></label>
+            <input id="existingPassword" type="password" placeholder="Enter Password" name="existingPassword" required>
+            <br/>
+            <div class="buttons">
+                <button id="loginExistingAccountButton" class="loginButton">Login</button>
+                <button class="backToLoginButton">Back to Login</button>
+            </div>
+            <br/>
+            <span id="loginError" class="hidden">Login Error!</span>
+        </div>
+        <div id="newUsername" class="newUsername hidden">
+            <h3>Create a unique username for use on the leaderboards</h3>
+            <p>
+                Usernames must:
+                <br/>
+                Start with a letter,
+                <br/>
+                contain only a combination of letters, numbers, and underscores,
+                <br/>
+                and can only be up to 24 characters long.
+                <br/>
+                <br/>
+            </p>
+            <label for="username"><b>Username:</b></label>
+            <input id="username" maxlength="24" type="text" placeholder="Enter Username" name="username" required>
+            <button id="addUser" class="loginButton">Confirm Username</button>
+            <br/>
+            <br/>
+            <span id="usernameInvalidFormatError" class="hidden">Username format invalid!</span>
+            <span id="usernameError" class="hidden">Username already exists!</span>
+        </div>
+    </div>
+    <div id="start" class="hidden">
         <h1 class="banner">Welcome to Progball!</h1>
         <h2>Description:</h2>
         <p>
@@ -35,8 +97,77 @@
             <br/>
             Press the Modes button to spice things up.
             <br/>
+            Press the Hiscores button for global leaderboards
+            <br/>
             And most importantly: have fun!
         </p>
+        <div class="buttons">
+            <button class="playButton">Play</button>
+            <button class="modesButton">Modes</button>
+            <button class="hiscoresButton">Hiscores</button>
+        </div>
+    </div>
+    <div id="hiscores" class="hidden">
+        <h1 class="banner">Progball Hiscores</h1>
+        <h2 class="banner">Classic Mode Top 10</h2>
+        <div class="leaderboard">
+            <div class="row">
+                <div class="rank"><b>Rank</b></div>
+                <div class="username"><b>Username</b></div>
+                <div class="score"><b>Score</b></div>
+            </div>
+            <br/>
+            <div id="row1" class="row hidden">
+                <div id="rank1" class="rank"><b>1.</b></div>
+                <div id="username1" class="username"><b>Username</b></div>
+                <div id="score1" class="score"><b>Score</b></div>
+            </div>
+            <div id="row2" class="row hidden">
+                <div id="rank2" class="rank"><b>2.</b></div>
+                <div id="username2" class="username"><b>Username</b></div>
+                <div id="score2" class="score"><b>Score</b></div>
+            </div>
+            <div id="row3" class="row hidden">
+                <div id="rank3" class="rank"><b>3.</b></div>
+                <div id="username3" class="username"><b>Username</b></div>
+                <div id="score3" class="score"><b>Score</b></div>
+            </div>
+            <div id="row4" class="row hidden">
+                <div id="rank4" class="rank"><b>4.</b></div>
+                <div id="username4" class="username"><b>Username</b></div>
+                <div id="score4" class="score"><b>Score</b></div>
+            </div>
+            <div id="row5" class="row hidden">
+                <span id="rank5" class="rank"><b>5.</b></span>
+                <span id="username5" class="username"><b>Username</b></span>
+                <span id="score5" class="score"><b>Score</b></span>
+            </div>
+            <div id="row6" class="row hidden">
+                <div id="rank6" class="rank"><b>6.</b></div>
+                <div id="username5" class="username"><b>Username</b></div>
+                <div id="score5" class="score"><b>Score</b></div>
+            </div>
+            <div id="row7" class="row hidden">
+                <div id="rank7" class="rank"><b>7.</b></div>
+                <div id="username7" class="username"><b>Username</b></div>
+                <div id="score7" class="score"><b>Score</b></div>
+            </div>
+            <div id="row8" class="row hidden">
+                <div id="rank8" class="rank"><b>8.</b></div>
+                <div id="username8" class="username"><b>Username</b></div>
+                <div id="score8" class="score"><b>Score</b></div>
+            </div>
+            <div id="row9" class="row hidden">
+                <div id="rank9" class="rank"><b>9.</b></div>
+                <div id="username9" class="username"><b>Username</b></div>
+                <div id="score9" class="score"><b>Score</b></div>
+            </div>
+            <div id="row10" class="row hidden">
+                <div id="rank10" class="rank"><b>10.</b></div>
+                <div id="username10" class="username"><b>Username</b></div>
+                <div id="score10" class="score"><b>Score</b></div>
+            </div>
+        </div>
         <div class="buttons">
             <button class="playButton">Play</button>
             <button class="modesButton">Modes</button>
@@ -47,6 +178,16 @@
         <p>
             Want to spice things up? Try a new mode!
             <br/>
+            <span id="classicFreeFlavorText">
+            Classic Mode is the default mode, and is the only mode used for global hiscores.
+            Free Mode lets you choose whichever options you want, but does <b>NOT</b> count towards global hiscores.
+            </span>
+        </p>
+        <div class="buttons">
+            <button id="classicModeButton" class="buttonOn">Classic</button>
+            <button id="freeModeButton" class="buttonOff">Free</button>
+        </div>
+        <div id="freeModeOptions" class="hidden">
             With Shrink Mode enabled, your character will progressively get smaller.
             <br/>
             <br/>
@@ -55,24 +196,25 @@
                 <button id="shrinkOff" class="buttonOn">Off</button>
                 <button id="shrinkOn" class="buttonOff">On</button>
             </span>
-        </p>
-        <p>
-            With the Enlarged ball mode, the balls will progressively get bigger.
-            <br/>
-            With the Normal ball mode, the balls will stay the same size.
-            <br/>
-            With the Shrunken ball mode, the balls will progressively get smaller.
-            <br/>
-            <br/>
-            Ball Mode: <span id="ballModeText">Normal</span>
-            <div class="ballButtons">
-                <button id="ballShrunken" class="buttonOff">Shrunken</button>
-                <button id="ballNormal" class="buttonOn">Normal</button>
-                <button id="ballEnlarged" class="buttonOff">Enlarged</button>
-            </div>
-        </p>
+            <p>
+                With the Enlarged ball mode, the balls will progressively get bigger.
+                <br/>
+                With the Normal ball mode, the balls will stay the same size.
+                <br/>
+                With the Shrunken ball mode, the balls will progressively get smaller.
+                <br/>
+                <br/>
+                Ball Mode: <span id="ballModeText">Normal</span>
+                <div class="ballButtons">
+                    <button id="ballShrunken" class="buttonOff">Shrunken</button>
+                    <button id="ballNormal" class="buttonOn">Normal</button>
+                    <button id="ballEnlarged" class="buttonOff">Enlarged</button>
+                </div>
+            </p>
+        </div>
         <div class="buttons">
             <button class="playButton">Play</button>
+            <button class="hiscoresButton">Hiscores</button>
         </div>
     </div>
     <div id="end" class="hidden">
@@ -90,11 +232,12 @@
             <span id="hiscoreText">Hiscore: localStorage.hiscore</span>
             <br/>
             <br/>
-            Press Play to dodge some more, or press Modes to change your game up.
+            Press Play to dodge some more, Modes to change your game up, or Hiscores to see the global leaderboards.
         </p>
         <div class="endButtons">
             <button class="playButton">Play</button>
             <button class="modesButton">Modes</button>
+            <button class="hiscoresButton">Hiscores</button>
         </div>
         <p class="endText">
             If you're feeling particularly daring, reset your Hiscore with the Reset button.
