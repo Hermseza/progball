@@ -61,7 +61,7 @@ export function playGame() {
     const fps = 60;
     const msPerFrame = 1000 / fps;
     // used to keep track of starting position that will be used for touchmove references
-    let touchStartY;
+    let touchStartY = null;
 
     // event listeners
 
@@ -138,11 +138,13 @@ export function playGame() {
         if((relativeX < canvasWidth && relativeX > canvasWidth-50)
         && (relativeY < canvasHeight && relativeY > canvasHeight-50)) {
             // mark it as pressed
+            upPressed = false;
             downPressed = true;
         // if the user clicked/touched the up button
         } else if((relativeX < canvasWidth && relativeX > canvasWidth-50)
         && (relativeY < canvasHeight-60 && relativeY > canvasHeight-110)) {
             // mark it as pressed
+            downPressed = false;
             upPressed = true;
         // user clicked/touched somewhere else on the screen
         } else {
@@ -157,24 +159,26 @@ export function playGame() {
     }
     // handle touchmove event
     function touchMoveHandler(e) {
-        // get y coordinate of the touch location
-        const relativeY = e.changedTouches[0].clientY + canvas.offsetTop;
-        // if user swiped down
-        if (relativeY > touchStartY) {
-            // if they were previously moving up, stop
-            upPressed = false;
-            // and move down
-            downPressed = true;
+        if (touchStartY) {
+            // get y coordinate of the touch location
+            const relativeY = e.changedTouches[0].clientY + canvas.offsetTop;
+            // if user swiped down
+            if (relativeY > touchStartY) {
+                // if they were previously moving up, stop
+                upPressed = false;
+                // and move down
+                downPressed = true;
+            }
+            // if user swiped up
+            if(relativeY < touchStartY) {
+                // if they were previously moving down, stop
+                downPressed = false;
+                // and move up
+                upPressed = true;
+            }
+            // prevent default so users don't have unexpected situations
+            e.preventDefault();
         }
-        // if user swiped up
-        if(relativeY < touchStartY) {
-            // if they were previously moving down, stop
-            downPressed = false;
-            // and move up
-            upPressed = true;
-        }
-        // prevent default so users don't have unexpected situations
-        e.preventDefault();
     }
     // handle mouseend event
     function mouseEndHandler(e) {
