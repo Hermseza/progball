@@ -159,7 +159,7 @@ export function playGame() {
     }
     // handle touchmove event
     function touchMoveHandler(e) {
-        if (touchStartY) {
+        if (touchStartY !== null) {
             // get y coordinate of the touch location
             const relativeY = e.changedTouches[0].clientY + canvas.offsetTop;
             // if user swiped down
