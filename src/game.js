@@ -1,3 +1,6 @@
+// imports for setting hiscore to database
+import { getAuth  } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 export function playGame() {
 
@@ -182,7 +185,10 @@ export function playGame() {
         // prevent default so users don't have unexpected situations
         e.preventDefault();
     }
-
+    // capitalizes the first letter of a string
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     // generate a random y value between the minimum and maximum play area
     function generateRandomY() {
         return Math.floor(Math.random() * (yBallMax - yBallMin + 1) + yBallMin)
@@ -269,7 +275,9 @@ export function playGame() {
         ctx.fillStyle = "white";
         ctx.textAlign = "start";
         ctx.textBaseline = "alphabetic";
-        ctx.fillText(`Hiscore: ${localStorage.hiscore}`, 8, 20);
+        // determine which hiscore to use
+        const scoreToUse = localStorage.gameMode === 'classic' ? localStorage.hiscore : localStorage.hiscoreFree;
+        ctx.fillText(`Hiscore: ${scoreToUse}`, 8, 20);
         // draw current score
         ctx.fillText(`Score: ${score}`, 8, 43);
     }
@@ -277,9 +285,11 @@ export function playGame() {
     function drawLevel() {
         ctx.font = "16px Arial";
         ctx.fillStyle = "white";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(`Level ${level}`, canvas.width-50, 25);
+        ctx.textAlign = "start";
+        ctx.textBaseline = "alphabetic";
+        const gameMode = capitalizeFirstLetter(localStorage.gameMode);
+        ctx.fillText(`${gameMode} Mode`, canvas.width-100, 20);
+        ctx.fillText(`Level ${level}`, canvas.width-100, 43);
     }
     // draws the border text
     function drawTopBorderText() {
@@ -328,7 +338,7 @@ export function playGame() {
         // clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // update oldHiscore
-        localStorage.oldHiscore = localStorage.hiscore;
+        localStorage.oldHiscore = localStorage.gameMode === 'classic' ? localStorage.hiscore : localStorage.hiscoreFree;
         // draw balls
         drawBalls();
         // draw player
@@ -355,14 +365,28 @@ export function playGame() {
                     // potentially update hiscore
                     if (score > parseInt(localStorage.oldHiscore)) {
                         // new hiscore, update everything
-                        document.getElementById('scoreFlavorText').textContent = 'New Hiscore!';
-                        document.getElementById('scoreText').textContent = `Previous Hiscore: ${localStorage.oldHiscore}`;
-                        document.getElementById('hiscoreText').textContent = `New Hiscore: ${score}`;
-                        localStorage.hiscore = `${score}`;
+                        const gameMode = capitalizeFirstLetter(localStorage.gameMode);
+                        document.getElementById('scoreFlavorText').textContent = `New ${gameMode} Hiscore!`;
+                        document.getElementById('scoreText').textContent = `Previous ${gameMode} Hiscore: ${localStorage.oldHiscore}`;
+                        document.getElementById('hiscoreText').textContent = `New ${gameMode} Hiscore: ${score}`;
+                        if (localStorage.gameMode === 'classic') {
+                            localStorage.hiscore = `${score}`;
+                            // update the database with the new hiscore
+                            const database = getDatabase();
+                            const auth = getAuth();
+                            const username = auth.currentUser.displayName;
+                            set(ref(database, `users/${username}`), {
+                                hiscore: parseInt(localStorage.hiscore)
+                            });
+                        } else if (localStorage.gameMode === 'free') {
+                            localStorage.hiscoreFree = `${score}`;
+                        }
                     } else {
                         // not a new hiscore, update score and hiscore
                         document.getElementById('scoreText').textContent = `Score: ${score}`;
-                        document.getElementById('hiscoreText').textContent = `Hiscore: ${localStorage.hiscore}`;
+                        const gameMode = capitalizeFirstLetter(localStorage.gameMode);
+                        const scoreToUse = localStorage.gameMode === 'classic' ? localStorage.hiscore : localStorage.hiscoreFree;
+                        document.getElementById('hiscoreText').textContent = `${gameMode} Hiscore: ${scoreToUse}`;
                     }
                     score = 0;
                     level = 1;
@@ -392,38 +416,41 @@ export function playGame() {
                 level++;
                 levelScore = 0;
                 // adjust for modes
-                // check for shrinkMode
-                if (localStorage.shrinkMode === 'true') {
-                    // the potential new player height
-                    const newHeight = player.height - 5;
-                    // make sure the player still has height
-                    if (newHeight > 1) {
-                        // adjust player height
-                        player.height = newHeight;
+                // only adjust if in free mode
+                if (localStorage.gameMode === 'free') {
+                    // check for shrinkMode
+                    if (localStorage.shrinkMode === 'true') {
+                        // the potential new player height
+                        const newHeight = player.height - 5;
+                        // make sure the player still has height
+                        if (newHeight > 1) {
+                            // adjust player height
+                            player.height = newHeight;
+                        }
                     }
-                }
-                // check for ballMode
-                // enlarged mode increases ballRadius
-                if (localStorage.ballMode === 'enlarged') {
-                    // the potential new ball radius
-                    const newBallRadius = ballRadius + 1;
-                    // make sure player still has room to dodge
-                    if (canvas.height - 50 - newBallRadius > player.height) {
-                        // adjust ballRadius and related variables
-                        ballRadius = newBallRadius;
-                        yBallMin = 50 + ballRadius;
-                        yBallMax = canvas.height - ballRadius;
-                    }
-                // shrunken mode decreases ball radius
-                } else if (localStorage.ballMode === 'shrunken') {
-                    // the potential new ball radius
-                    const newBallRadius = ballRadius - 1;
-                    // make sure the ball still has a radius
-                    if (newBallRadius > 1) {
-                        // adjust ballRadius and related variables
-                        ballRadius = newBallRadius;
-                        yBallMin = 50 + ballRadius;
-                        yBallMax = canvas.height - ballRadius;
+                    // check for ballMode
+                    // enlarged mode increases ballRadius
+                    if (localStorage.ballMode === 'enlarged') {
+                        // the potential new ball radius
+                        const newBallRadius = ballRadius + 1;
+                        // make sure player still has room to dodge
+                        if (canvas.height - 50 - newBallRadius > player.height) {
+                            // adjust ballRadius and related variables
+                            ballRadius = newBallRadius;
+                            yBallMin = 50 + ballRadius;
+                            yBallMax = canvas.height - ballRadius;
+                        }
+                    // shrunken mode decreases ball radius
+                    } else if (localStorage.ballMode === 'shrunken') {
+                        // the potential new ball radius
+                        const newBallRadius = ballRadius - 1;
+                        // make sure the ball still has a radius
+                        if (newBallRadius > 1) {
+                            // adjust ballRadius and related variables
+                            ballRadius = newBallRadius;
+                            yBallMin = 50 + ballRadius;
+                            yBallMax = canvas.height - ballRadius;
+                        }
                     }
                 }
             }
