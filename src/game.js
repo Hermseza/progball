@@ -126,6 +126,7 @@ export function playGame() {
         let relativeX;
         let relativeY;
         const canvasWidth = canvas.offsetWidth;
+        const canvasHeight = canvas.offsetHeight;
         if (e.type === 'touchstart') {
             relativeX = e.changedTouches[0].clientX + canvas.offsetLeft;
             relativeY = e.changedTouches[0].clientY + canvas.offsetTop;
@@ -135,12 +136,12 @@ export function playGame() {
         }
         // if user clicked/touched the down button
         if((relativeX < canvasWidth && relativeX > canvasWidth-50)
-        && (relativeY < canvas.height && relativeY > canvas.height-50)) {
+        && (relativeY < canvasHeight && relativeY > canvasHeight-50)) {
             // mark it as pressed
             downPressed = true;
         // if the user clicked/touched the up button
         } else if((relativeX < canvasWidth && relativeX > canvasWidth-50)
-        && (relativeY < canvas.height-60 && relativeY > canvas.height-110)) {
+        && (relativeY < canvasHeight-60 && relativeY > canvasHeight-110)) {
             // mark it as pressed
             upPressed = true;
         // user clicked/touched somewhere else on the screen
@@ -385,6 +386,7 @@ export function playGame() {
                         // not a new hiscore, update score and hiscore
                         document.getElementById('scoreText').textContent = `Score: ${score}`;
                         const gameMode = capitalizeFirstLetter(localStorage.gameMode);
+                        document.getElementById('scoreFlavorText').textContent = `Not quite a new ${gameMode} Hiscore, bummer.`;
                         const scoreToUse = localStorage.gameMode === 'classic' ? localStorage.hiscore : localStorage.hiscoreFree;
                         document.getElementById('hiscoreText').textContent = `${gameMode} Hiscore: ${scoreToUse}`;
                     }
