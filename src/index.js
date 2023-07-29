@@ -131,6 +131,12 @@ function clickHandler(e) {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
+                // if user displayName is null, take them to the username scree
+                if (user.displayName === null) {
+                    document.getElementById('existingAccount').classList.add('hidden');
+                    document.getElementById('newUsername').classList.remove('hidden');
+                    return; 
+                }
                 // set the localStorage hiscore to the hiscore from the database for the user
                 const dbRef = ref(getDatabase());
                 get(child(dbRef, `users/${user.displayName}/hiscore`)).then((snapshot) => {
