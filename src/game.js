@@ -20,7 +20,7 @@ export function playGame() {
     const initialBallRadius = 10;
     let ballRadius = initialBallRadius;
     // starting x position of a ball
-    const ballSpawnX = canvas.width - ballRadius;
+    let ballSpawnX = canvas.width - ballRadius;
     // used to keep track of the x position of a ball
     let x = ballSpawnX;
     // minimum possible y position of a ball
@@ -85,6 +85,9 @@ export function playGame() {
         // reset canvas width/height when window is resized
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        ballSpawnX = canvas.width - ballRadius;
+        yBallMax = canvas.height - ballRadius;
+
     });
     observer.observe(canvas);
 
