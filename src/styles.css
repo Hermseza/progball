@@ -58,12 +58,22 @@ label {
 }
 .leaderboard {
     margin: auto;
+    width: 100%;
+}
+.rank {
+    width: 10%;
+}
+.username {
+    width: 60%;
+}
+.score {
+    width: 30%;
 }
 tr {
     text-align: center;
 }
 td {
-    padding: 0 2rem;
+    word-break: break-all;
 }
 .hidden {
     display: none;
