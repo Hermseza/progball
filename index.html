@@ -14,10 +14,15 @@
     </canvas>
     <div id="login" class="active">
         <h1 class="banner">Welcome to Progball!</h1>
-        <h2>Create an account using email or log in and play!</h2>
+        <h2>Create an account using email or log in and play!
+            <br/>
+            Use Quicklog to automatically login to your previously logged in account.
+        </h2>
         <div id="loginButtons" class="loginButtons">
             <button id="signupButton">Signup</button>
             <button id="loginButton">Login</button>
+            <button id="quicklogButton">Quicklog</button>
+            <span id="quicklogError" class="hidden">No previous login detected.</span>
         </div>
         <div id="createAccount" class="createAccount hidden">
             <h3>Create a new account</h3>
@@ -110,64 +115,69 @@
     <div id="hiscores" class="hidden">
         <h1 class="banner">Progball Hiscores</h1>
         <h2 class="banner">Classic Mode Top 10</h2>
-        <div class="leaderboard">
-            <div class="row">
-                <div class="rank"><b>Rank</b></div>
-                <div class="username"><b>Username</b></div>
-                <div class="score"><b>Score</b></div>
-            </div>
+        <table class="leaderboard">
+            <colgroup>
+                <col span="1" class="rank">
+                <col span="1" class="username">
+                <col span="1" class="score">
+            </colgroup>
+            <tr>
+                <th><b>Rank</b></th>
+                <th><b>Username</b></th>
+                <th><b>Score</b></th>
+            </tr>
             <br/>
-            <div id="row1" class="row hidden">
-                <div id="rank1" class="rank"><b>1.</b></div>
-                <div id="username1" class="username"><b>Username</b></div>
-                <div id="score1" class="score"><b>Score</b></div>
-            </div>
-            <div id="row2" class="row hidden">
-                <div id="rank2" class="rank"><b>2.</b></div>
-                <div id="username2" class="username"><b>Username</b></div>
-                <div id="score2" class="score"><b>Score</b></div>
-            </div>
-            <div id="row3" class="row hidden">
-                <div id="rank3" class="rank"><b>3.</b></div>
-                <div id="username3" class="username"><b>Username</b></div>
-                <div id="score3" class="score"><b>Score</b></div>
-            </div>
-            <div id="row4" class="row hidden">
-                <div id="rank4" class="rank"><b>4.</b></div>
-                <div id="username4" class="username"><b>Username</b></div>
-                <div id="score4" class="score"><b>Score</b></div>
-            </div>
-            <div id="row5" class="row hidden">
-                <span id="rank5" class="rank"><b>5.</b></span>
-                <span id="username5" class="username"><b>Username</b></span>
-                <span id="score5" class="score"><b>Score</b></span>
-            </div>
-            <div id="row6" class="row hidden">
-                <div id="rank6" class="rank"><b>6.</b></div>
-                <div id="username6" class="username"><b>Username</b></div>
-                <div id="score6" class="score"><b>Score</b></div>
-            </div>
-            <div id="row7" class="row hidden">
-                <div id="rank7" class="rank"><b>7.</b></div>
-                <div id="username7" class="username"><b>Username</b></div>
-                <div id="score7" class="score"><b>Score</b></div>
-            </div>
-            <div id="row8" class="row hidden">
-                <div id="rank8" class="rank"><b>8.</b></div>
-                <div id="username8" class="username"><b>Username</b></div>
-                <div id="score8" class="score"><b>Score</b></div>
-            </div>
-            <div id="row9" class="row hidden">
-                <div id="rank9" class="rank"><b>9.</b></div>
-                <div id="username9" class="username"><b>Username</b></div>
-                <div id="score9" class="score"><b>Score</b></div>
-            </div>
-            <div id="row10" class="row hidden">
-                <div id="rank10" class="rank"><b>10.</b></div>
-                <div id="username10" class="username"><b>Username</b></div>
-                <div id="score10" class="score"><b>Score</b></div>
-            </div>
-        </div>
+            <tr id="row1" class="hidden">
+                <td id="rank1"><b>1.</b></td>
+                <td id="username1"><b>Username</b></td>
+                <td id="score1"><b>Score</b></td>
+            </tr>
+            <tr id="row2" class="hidden">
+                <td id="rank2"><b>2.</b></td>
+                <td id="username2"><b>Username</b></td>
+                <td id="score2"><b>Score</b></td>
+            </tr>
+            <tr id="row3" class="hidden">
+                <td id="rank3"><b>3.</b></td>
+                <td id="username3"><b>Username</b></td>
+                <td id="score3"><b>Score</b></td>
+            </tr>
+            <tr id="row4" class="hidden">
+                <td id="rank4"><b>4.</b></td>
+                <td id="username4"><b>Username</b></td>
+                <td id="score4"><b>Score</b></td>
+            </tr>
+            <tr id="row5" class="hidden">
+                <td id="rank5"><b>5.</b></td>
+                <td id="username5"><b>Username</b></td>
+                <td id="score5"><b>Score</b></td>
+            </tr>
+            <tr id="row6" class="hidden">
+                <td id="rank6"><b>6.</b></td>
+                <td id="username6"><b>Username</b></td>
+                <td id="score6"><b>Score</b></td>
+            </tr>
+            <tr id="row7" class="hidden">
+                <td id="rank7"><b>7.</b></td>
+                <td id="username7"><b>Username</b></td>
+                <td id="score7"><b>Score</b></td>
+            </tr>
+            <tr id="row8" class="hidden">
+                <td id="rank8"><b>8.</b></td>
+                <td id="username8"><b>Username</b></td>
+                <td id="score8"><b>Score</b></td>
+            </tr>
+            <tr id="row9" class="hidden">
+                <td id="rank9"><b>9.</b></td>
+                <td id="username9"><b>Username</b></td>
+                <td id="score9"><b>Score</b></td>
+            </tr>
+            <tr id="row10" class="hidden">
+                <td id="rank10"><b>10.</b></td>
+                <td id="username10"><b>Username</b></td>
+                <td id="score10"><b>Score</b></td>
+            </tr>
+        </table>
         <div class="buttons">
             <button class="playButton">Play</button>
             <button class="modesButton">Modes</button>
