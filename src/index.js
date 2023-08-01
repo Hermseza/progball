@@ -110,6 +110,8 @@ function clickHandler(e) {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
+                localStorage.email = email;
+                localStorage.password = password;
                 // hide the creation screen and show username screen
                 document.getElementById('createAccount').classList.add('hidden');
                 document.getElementById('newUsername').classList.remove('hidden');
@@ -122,6 +124,41 @@ function clickHandler(e) {
                 document.getElementById('createError').classList.remove('hidden');
             });
         }
+        if (target.id === 'quicklogButton') {
+            // we are attempting to quicklog in to an account
+            // first check to see if email and password are present
+            if (localStorage.email === undefined || localStorage.password === undefined) {
+                // if they are not present, show error and return
+                document.getElementById('quicklogError').classList.remove('hidden');
+                return;
+            }
+            // if they are present, attempt to login with the credentials
+            const auth = getAuth();
+            signInWithEmailAndPassword(auth, localStorage.email, localStorage.password)
+            .then((userCredential) => {
+                // signed in
+                const user = userCredential.user;
+                // if user displayName is null, take them to the username screen
+                if (user.displayName === null) {
+                    document.getElementById('existingAccount').classList.add('hidden');
+                    document.getElementById('newUsername').classList.remove('hidden');
+                    return; 
+                }
+                // if user displayName is not null, start the game
+                // hide the login screen, show the start screen, and change gameState
+                document.getElementById('login').classList.replace('active', 'hidden');
+                document.getElementById('start').classList.replace('hidden', 'active');
+                localStorage.gameState = 'start';
+                return;
+            })
+            .catch((error) => {
+                // login failed, log the error
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                document.getElementById('quicklogError').textContent = `${errorCode}: ${errorMessage}`;
+                document.getElementById('quicklogError').classList.remove('hidden');
+            });
+        }
         if (target.id === 'loginExistingAccountButton') {
             // we are attempting to log in to an existing account
             const email = document.getElementById('existingEmail').value;
@@ -131,7 +168,9 @@ function clickHandler(e) {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                // if user displayName is null, take them to the username scree
+                localStorage.email = email;
+                localStorage.password = password;
+                // if user displayName is null, take them to the username screen
                 if (user.displayName === null) {
                     document.getElementById('existingAccount').classList.add('hidden');
                     document.getElementById('newUsername').classList.remove('hidden');
@@ -210,6 +249,7 @@ function clickHandler(e) {
             // back to login button was pressed, hide the current div, then set login as active
             document.getElementById('createAccount').className = 'hidden';
             document.getElementById('existingAccount').className = 'hidden';
+            document.getElementById('quicklogError').className = 'hidden';
             document.getElementById('loginButtons').classList.replace('hidden', 'active');
         }
     }

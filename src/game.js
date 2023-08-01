@@ -16,8 +16,10 @@ export function playGame() {
     canvas.height = window.innerHeight;
     // context used to draw on the canvas
     const ctx = canvas.getContext('2d');
+    // initial height of the player
+    const initialPlayerHeight = Math.round(window.innerHeight / 10);
     // radius of the ball object
-    const initialBallRadius = 10;
+    const initialBallRadius = Math.floor(initialPlayerHeight / 7);
     let ballRadius = initialBallRadius;
     // starting x position of a ball
     let ballSpawnX = canvas.width - ballRadius;
@@ -37,8 +39,7 @@ export function playGame() {
     const initialVelocity = -(Math.round(window.innerWidth/100));
     let dx = initialVelocity;
     // object representing the player's height and width
-    const initialPlayerHeight = 75;
-    const player = {
+    let player = {
         height: initialPlayerHeight,
         width: 10
     };
@@ -85,9 +86,10 @@ export function playGame() {
         // reset canvas width/height when window is resized
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        player.height = Math.round(window.innerHeight / 10);
+        ballRadius = Math.floor(player.height / 7);
         ballSpawnX = canvas.width - ballRadius;
         yBallMax = canvas.height - ballRadius;
-
     });
     observer.observe(canvas);
 

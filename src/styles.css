@@ -22,24 +22,18 @@ canvas {
 .banner {
     text-align: center;
 }
+button {
+    background: LightSlateGray;
+    color: white;
+    margin: 0 1rem;
+}
 .buttons, .loginButtons {
     margin: 1rem 0;
     text-align: center;
 }
-.playButton, .modesButton, .hiscoresButton, #loginButton, #signupButton {
-    background: LightSlateGray;
-    color: white;
-    height: 4rem;
-    width: 5rem;
-}
-#shrinkOn, #shrinkOff, #ballNormal, #classicModeButton, #freeModeButton {
+#ballNormal {
     height: 4rem;
     width: 4rem;
-    margin: 0 1rem;
-}
-#ballShrunken {
-    height: 2rem;
-    width: 6rem;
 }
 #ballEnlarged {
     height: 6rem;
@@ -47,11 +41,9 @@ canvas {
 }
 .buttonOn {
     background: SeaGreen;
-    color: white;
 }
 .buttonOff {
     background: Crimson;
-    color: white;
 }
 .endText, #login {
     text-align: center;
@@ -60,41 +52,18 @@ canvas {
     margin: 2rem 0;
     text-align: center;
 }
-#reset {
-    background: LightSlateGray;
-    color: white;
-    height: 4rem;
-    width: 4rem;
-}
-.loginButton, .backToLoginButton {
-    background: LightSlateGray;
-    color: white;
-    margin: 0 3rem;
-    height: 4rem;
-    width: 4rem;
-    vertical-align: top;
-}
-#addUser {
-    width: 5rem;
-    vertical-align: middle;
-}
 label {
     display: inline-block;
     width: 6rem;
 }
 .leaderboard {
-    height: auto;
+    margin: auto;
 }
-.row {
-    display: block;
-    position: relative;
+tr {
     text-align: center;
 }
-.rank, .username, .score {
-    display: inline-block;
-    position: relative;
-    text-align: center;
-    width: 20%;
+td {
+    padding: 0 2rem;
 }
 .hidden {
     display: none;
